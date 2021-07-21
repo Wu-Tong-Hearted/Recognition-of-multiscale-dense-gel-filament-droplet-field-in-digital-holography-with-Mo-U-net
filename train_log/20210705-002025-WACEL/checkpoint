@@ -1,0 +1,2 @@
+model_checkpoint_path: "cp-epoch0057-loss0.0072-val0.0079.ckpt"
+all_model_checkpoint_paths: "cp-epoch0057-loss0.0072-val0.0079.ckpt"
