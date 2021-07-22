@@ -1,6 +1,15 @@
-# Filament-droplet Field Detection Using Mo-U-net]{Recognition of multiscale dense gel filament-droplet field in digital holography with Mo-U-net
- # Overall of this project
-## Structure of files
+# Filament-droplet Field Detection Using Mo-U-net
+
+Paper: Recognition of multiscale dense gel filament-droplet field in digital holography with Mo-U-net
+
+Github: https://github.com/Wu-Tong-Hearted/Recognition-of-multiscale-dense-gel-filament-droplet-field-in-digital-holography-with-Mo-U-net.git
+
+## Overall of this project
+### Structure of files
+
+![tree](doc/tree.png)
+
+
 1. File Functions contains some support functions used in training including  callbacks (some train strategies), metrics, test metrics (metrics_in_novel) and show_img.
 
 2. File data contains input img and ATM label. In this repository, we only give a small batch of data for valuation to decrease the file size.
@@ -14,3 +23,16 @@
 6. File test data contains part of our test EFI gained from five different experimental conditions.
 
 7. File train_log contains the trained weights of Mo-U-net. If you want to valuate the performance or just employ Mo-U-net for another use, please first check that you have loaded the right weights (unoverfitted) into the Mo-U-net. In our study, the best epoch for weights should be lower than 10 epochs.
+
+
+## Model
+
+![Model](doc/fig/fig3.jpg)
+
+
+## Result
+### Over view of segmentation
+
+![overview](doc/fig/fig7.jpg)
+
+
