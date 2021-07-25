@@ -67,9 +67,8 @@ def onmouse_for_change(event, x, y, flags, param):
     global x0,y0,s,ix, iy,save
     global mode,pen
 
-    # 单像素修改
+
     if event == cv2.EVENT_LBUTTONDOWN:  
-        #print(x,y,'----------')
         change_pixel(mode,x,y,x0,y0,img_label,pen)
         ix,iy=x,y
         save=False
