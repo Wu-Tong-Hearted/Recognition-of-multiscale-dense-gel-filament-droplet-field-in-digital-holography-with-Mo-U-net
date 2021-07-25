@@ -7,10 +7,9 @@ import os
 import warnings
 warnings.filterwarnings('ignore')
 import tensorflow as tf
-# ---------------------------使用GPU时揭开--------------------------
+# ---------------------------when use GPU, reveal it--------------------------
 # gpus = tf.config.experimental.list_physical_devices('GPU')
 # tf.config.experimental.set_visible_devices(devices=gpus[1:4], device_type="GPU")
-# ---------------------------使用GPU时揭开--------------------------
 import datetime
 import importlib
 import create_dataset
@@ -21,22 +20,22 @@ import Functions.callbacks as callbacks
 from Functions.metrics import MeanIoU, CategoricalTruePositivesRecall
 importlib.reload(create_dataset)
 
-# ---------------------------使用GPU时揭开--------------------------
+# ---------------------------when use GPU, reveal it--------------------------
 gpus = tf.config.experimental.list_physical_devices('GPU')
 tf.config.experimental.set_visible_devices(devices=gpus[1], device_type="GPU")
-# ---------------------------使用GPU时揭开--------------------------
+# ---------------------------when use GPU, reveal it--------------------------
 
 
 if gpus:
     try:
-        # 设置 GPU 显存占用为按需分配，增长式
+        # set GPU usage with a demanding mode
         for gpu in gpus:
             tf.config.experimental.set_memory_growth(gpu, True)
     except RuntimeError as e:
-        # 异常处理
+        # warning
         print(e)
 
-# --------------------------多GPU训练-------------------------------
+# --------------------------use multi GPU traiing-------------------------------
 strategy = tf.distribute.MirroredStrategy()
 with strategy.scope():
 
@@ -46,36 +45,36 @@ with strategy.scope():
     # BATCH_SIZE = 4
     BATCH_SIZE = 8
 
-    # 加载数据集
+    # load train set
     dataset_name = 'at_data_enhance'
     train_data, test_data = create_dataset.load_ds(path='C:/Users/Pangzhentao/learn_keras/data/' + dataset_name, BATCH_SIZE=BATCH_SIZE, TRAIN_RATE=0.8)
 
-    # 加载测试数据集
+    # load test set
     # train_data, test_data = create_dataset.load_ds(path=r'C:\Users\Pangzhentao\learn_keras\test data', BATCH_SIZE=BATCH_SIZE, TRAIN_RATE=1)
 
-    # 加载模型
+    # load model
     Unet_model = Unet_tiny.UnetTiny(classes=2, input_shape=[IMG_HEIGHT, IMG_WIDTH, CHANNELS], trainable=False) # 加载Unet
     FCN_8s = FCN_8s.fcn_8s(num_classes=2, input_shape=[IMG_HEIGHT, IMG_WIDTH, CHANNELS], baseline_trainable=True)
 
-    # 加载已经之前保存的模型
+    # load model that has been saved previously
     # SAVED_MODEL = r'C:\Users\Pangzhentao\learn_keras\result\models\20210605-102105-Unet-TL-50e-0.001'
     # model = tf.saved_model.load(SAVED_MODEL)
     # CONTINUETRAIN = True
 
-    # 选择需要测试的model
+    # choose which model to test
     # model = Unet_model
     # MODEL_NAME = model.name
     # MODEL_NAME = 'Unet-TL-50e-0.001'
     # model = FCN_8s
     # MODEL_NAME = 'FCN_8s'
 
-    # # 打印模型信息
+    # print the basic information of the model
     # model.summary()
     # tf.keras.utils.plot_model(model, MODEL_NAME + '.png', show_shapes=True, show_layer_names=True)
 
-    # 设置训练参数
+    # set training data
     learning_rate = 0.001
-    alpha = tf.keras.backend.variable(1, dtype='float32')  # 当使用SAD_B_Loss时揭开
+    alpha = tf.keras.backend.variable(1, dtype='float32')  # when use SAD_B_Loss, reveal it
     optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
     # optimizer = tf.keras.optimizers.SGD(momentum=0.99)
     loss_list = [
@@ -96,7 +95,7 @@ with strategy.scope():
     epoch = 100
 
 
-    # 加载模型
+    # load model
     model = Unet_model
     MODEL_NAME = model.name
 
@@ -104,7 +103,7 @@ with strategy.scope():
     alpha = tf.keras.backend.variable(1, dtype='float32')  # 当使用SAD_B_Loss时揭开
     optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
 
-    # 创建数据记录文件
+    # create training logs
     SAVED_MODEL_NAME = MODEL_NAME + '-' + loss.name + '-' + str(epoch) + 'e-' + str(learning_rate)
     train_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     log_dir="logs/fit/" + train_time + '-' + SAVED_MODEL_NAME
@@ -112,23 +111,22 @@ with strategy.scope():
     PATH = './result/predictions/' + train_time + '-' + dataset_name + '-' + SAVED_MODEL_NAME
 
 
-    # checkpoint_path 写模型的保存路径
+    # save checkpoint path
     checkpoint_path = "train_log/" + train_time + '-' + SAVED_MODEL_NAME + "/cp-epoch{epoch:04d}-loss{loss:5.4f}-val{val_loss:5.4f}.ckpt"
     # checkpoint_path = r'C:\Users\Pangzhentao\learn_keras\train_log\tune'
     checkpoint_dir = os.path.dirname(checkpoint_path)
-    # 如果需要加载模型，将下面注释揭开，需要指向特定weight的时候在checkpoint文件中修改指向的文件名
+    # if you want load model, reveal codes below, when a specific weight is demanded, change the root in checkpoint file
     # latest = tf.train.latest_checkpoint(checkpoint_path)
     # model.load_weights(latest)
 
-    # 需要保存参数训练的时候，调用这个callback函数
+    # when you need to save the training logs, use this callback function
     cp_callback = tf.keras.callbacks.ModelCheckpoint(
         filepath=checkpoint_path,
         save_weights_only=True,
         verbose=1,
-        period=0  # 这个参数表示多少个epoch后保存一个weight
+        period=0  # this parameter means how much epochs do you want to save weights
     )
 
-    # 创建模型训练compile
     model.compile(
         optimizer=optimizer,
         loss=loss,
@@ -137,7 +135,7 @@ with strategy.scope():
         run_eagerly=True
     )
 
-    # 开始训练模型
+    # start training
     history = model.fit(
         train_data,
         epochs=epoch,
@@ -151,12 +149,14 @@ with strategy.scope():
                    ]
         )
 
-    # 保存模型结构与模型参数到文件
+    # save the model
     SAVED_MODEL = './result/models/' + train_time + '-' + SAVED_MODEL_NAME
     tf.saved_model.save(model, SAVED_MODEL)
     print('saving savedmodel.')
-    del model # 删除网络对象
-    # 检测训练结果，输入一个test数据，看pred
+    del model
+
+
+    # test
     import Functions.show_img as simg
 
     print('testing!!!')

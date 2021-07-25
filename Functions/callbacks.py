@@ -7,22 +7,22 @@ import os
 
 '''
 ==================================================================
-目前实现的CallBacks有：
-1. 记录训练数据可视化
-2. 每个epoch之后打印预测，可以选择保存预测结果
-3. 当loss不再变化时改变lr
+The function of CallBacks as follows：
+1. record the processing of training
+2. print the pred results after certain epochs
+3. change the learning rate when loss stop decreasing 
 
 Update_Time: 2021/6/2
 Author: Wu Tong
 ==================================================================
 '''
 
-# 1. 记录训练数据可视化
+# 1. record the processing of training
 log_dir="logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H.%M%S")
 tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir, histogram_freq=1)
 
 
-# 2. 每个epoch之后打印预测
+# 2. print the pred results after certain epochs
 class ShowAtEpoch(Callback):
 
     def __init__(self, sourse=None, number=3, show=False, save=False, show_epochs=10, save_epochs=10, path=''):
@@ -58,7 +58,7 @@ class ShowAtEpoch(Callback):
         self.show = False
 
 
-# 3. 当loss不再变化时改变lr
+# 3. change the learning rate when loss stop decreasing
 class LearningRateChangeByLoss(Callback):
     '''
     :param patience shows your max tolerance to wait for loss decreasing

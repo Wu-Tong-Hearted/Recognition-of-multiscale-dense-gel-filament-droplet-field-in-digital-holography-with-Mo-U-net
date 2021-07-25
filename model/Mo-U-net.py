@@ -35,8 +35,8 @@ class UnetTiny(Model):
             'block_1_expand_relu',   # 64x64
             'block_3_expand_relu',   # 32x32
             'block_6_expand_relu',   # 16x16
-            'block_13_expand_relu',  # 8x8
-            'block_16_project',      # 4x4
+            # 'block_13_expand_relu',  # 8x8
+            # 'block_16_project',      # 4x4
         ]
         layers = [base_model.get_layer(name).output for name in layer_names]
 
@@ -46,8 +46,8 @@ class UnetTiny(Model):
         self.down_stack.trainable = trainable
 
         self.up_stack = [
-            upsample(512, 3),  # 4x4 -> 8x8
-            upsample(256, 3),  # 8x8 -> 16x16
+            # upsample(512, 3),  # 4x4 -> 8x8
+            # upsample(256, 3),  # 8x8 -> 16x16
             upsample(128, 3),  # 16x16 -> 32x32
             upsample(64, 3),   # 32x32 -> 64x64
         ]

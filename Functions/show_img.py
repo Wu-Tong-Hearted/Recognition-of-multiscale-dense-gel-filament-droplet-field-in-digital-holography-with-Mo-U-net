@@ -100,7 +100,7 @@ def show_predict(number=10, source=None, model=None, show=False, save=False, pat
         if save:
             if epoch != None:
                 path = path + '/epoch_' + str(epoch)
-            if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
+            if not os.path.exists(path):
                 os.makedirs(path)
 
         display_list = [x, y, pred]
@@ -139,11 +139,11 @@ def show_voting_predict(number=10, weight_list=[0.5, 0.5], show=False, source=No
 
         y = tf.squeeze(y)
 
-        # ---------------------------融合时揭开----------------------------
+        # ---------------------------reveal it when fusing----------------------------
         # basic_pred_0 = basic_pred[:, :, 0]
         # basic_pred_1 = basic_pred[:, :, 1]
         # fusing_pred_1 = fusing_pred[:, :, 1]
-        # ---------------------------融合时揭开----------------------------
+        # ---------------------------reveal it when fusing----------------------------
 
         y = y[:, :, 0]
         y = tf.expand_dims(y, axis=-1)
@@ -155,14 +155,14 @@ def show_voting_predict(number=10, weight_list=[0.5, 0.5], show=False, source=No
 
         pred = weight_list[0] * basic_pred + weight_list[1] * fusing_pred
 
-        # ---------------------------融合时揭开----------------------------
+        # ---------------------------reveal it when fusing----------------------------
         # pred_0 = pred[..., 0]
         # pred_0 = tf.expand_dims(pred_0, axis=-1)
         # pred_1 = pred[..., 1]
         # pred_1 = pred_1 + beta * y_1
         # pred_1 = tf.expand_dims(pred_1,axis=-1)
         # pred = tf.concat([pred_0, pred_1], axis=-1)
-        # ---------------------------融合时揭开----------------------------
+        # ---------------------------reveal it when fusing----------------------------
 
         pred = tf.argmax(pred, axis=-1)
         pred = tf.expand_dims(pred, axis=-1)
@@ -173,7 +173,7 @@ def show_voting_predict(number=10, weight_list=[0.5, 0.5], show=False, source=No
         if save:
             if epoch != None:
                 path = path + '/epoch_' + str(epoch)
-            if not os.path.exists(path):  # 判断是否存在文件夹如果不存在则创建为文件夹
+            if not os.path.exists(path):
                 os.makedirs(path)
 
         display_list = [x, y, pred]

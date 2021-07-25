@@ -7,22 +7,21 @@ gpus = tf.config.experimental.list_physical_devices('GPU')
 tf.config.experimental.set_visible_devices(devices=gpus[5:6], device_type="GPU")
 if gpus:
     try:
-        # 设置 GPU 显存占用为按需分配，增长式
+        # set GPU usage with a demanding mode
         for gpu in gpus:
             tf.config.experimental.set_memory_growth(gpu, True)
     except RuntimeError as e:
-        # 异常处理
         print(e)
 
-# ---------------------------不使用GPU时揭开--------------------------
+# ---------------------------reveal it if you donot use a GPU--------------------------
 # import os
 # os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-# ---------------------------不使用GPU时揭开--------------------------
+# ---------------------------reveal it if you donot use a GPU--------------------------
 
-# ---------------------------使用GPU时揭开--------------------------
+# ---------------------------reveal it if you do use a GPU--------------------------
 # gpus = tf.config.experimental.list_physical_devices('GPU')
 # tf.config.experimental.set_visible_devices(devices=gpus['3'], device_type="GPU")
-# ---------------------------不使用GPU时揭开--------------------------
+# ---------------------------reveal it if you do use a GPU--------------------------
 
 IMG_HEIGHT = 224*3
 IMG_WIDTH = 224*3
@@ -35,7 +34,7 @@ test_dir_name = r'\cut_672'
 PATH += test_dir_name
 # PATH = r'C:\Users\Pangzhentao\learn_keras\test data\final_test\true_label_by_hand\diameter_1.74mm velocity_92.9\cut_672'
 
-# 加载数据集
+# load train set
 test_data = create_dataset.load_test_ds(path=PATH,
                                         BATCH_SIZE=BATCH_SIZE,
                                         test_input='test_img',
@@ -43,12 +42,12 @@ test_data = create_dataset.load_test_ds(path=PATH,
 
 # train_data, test_data = create_dataset.load_ds(path=r'C:\Users\Pangzhentao\learn_keras\data', TRAIN_RATE=train_rate, BATCH_SIZE=BATCH_SIZE)
 
-# 检测训练结果，输入一个test数据，看pred
+# test
 import Functions.show_img as simg
 
 print('-------------------------testing!!!-----------------------------')
-# 如果需要加载模型，将下面注释揭开，需要指向特定weight的时候在checkpoint文件中修改指向的文件名
-# 加载basic_model
+# if you want load model, reveal codes below, when a specific weight is demanded, change the root in checkpoint file
+# load basic_model
 Unet_model = Unet_tiny.UnetTiny(classes=2, input_shape=[IMG_HEIGHT, IMG_WIDTH, CHANNELS], trainable=False) # 加载Unet
 basic_model = Unet_model
 checkpoint_dir = r'C:\Users\Pangzhentao\learn_keras\train_log\20210626-185451-unet_tiny-categorical_crossentropy-100e-0.001'
@@ -59,18 +58,8 @@ pred_file_name = 'NP_CEL_pred'
 # model_path = r'C:\Users\Pangzhentao\learn_keras\result\models\20210629-234752-unet_tiny-categorical_crossentropy-1e-0.001'
 # basic_model = tf.saved_model.load(model_path)
 
-# 加载fusing_model
-# SAVED_MODEL = r'C:\Users\Pangzhentao\learn_keras\result\models\20210606-115654-Unet-CEL-50e-0.001'
-# fusing_model = tf.saved_model.load(SAVED_MODEL)
 
-# PATH = r'C:\Users\Pangzhentao\learn_keras\test data\final_test\true_label_by_hand\diameter_2.13mm velocity_92.9'
-# test_dir_name = r'\cut_672'
-# PATH += test_dir_name
-
-# train_dir_name = r'\train_result'
-# test_dir_name = r'\test_result'
-
-# -----------------------------保存预测-----------------------------
+# -----------------------------save prediction-----------------------------
 simg.show_predict(number=100, source=test_data, model=basic_model, save=True, path=PATH, file_name=pred_file_name)
 
 # simg.show_voting_predict(number=10000,

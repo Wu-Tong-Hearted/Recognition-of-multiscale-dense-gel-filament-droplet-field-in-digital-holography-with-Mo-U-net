@@ -42,14 +42,7 @@ def read_path(root, pred, true):
 
 
 def Count_Metric(metric=None, file_path=None, pred_file_name=None, true_file_nam=None):
-    '''
 
-    :param metric: 评价指标名称，格式为字符串，需要输入仅为pred和true
-    :param file_path: 存放pred和true的文件夹路径
-    :param pred_file_name: 存放pred的文件夹名称
-    :param true_file_nam: 存放true的文件夹名称
-    :return: 返回包含平均计算结果，最小/大单张计算结果的列表
-    '''
     path_list = read_path(file_path, pred_file_name, true_file_nam)
     min_result = np.inf
     max_result = 0

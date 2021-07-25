@@ -4,23 +4,12 @@ import pathlib
 import numpy as np
 import random
 
-
-# 获取对应文件夹下所有图片的路径，返回包含所有图片路径的list，并输出获取图片数量
-def load_path(filepagedge_name='E:/Pycharm/My_Work/Reptile/data/FCN-8s-data'):
-    data_path = pathlib.Path(filepagedge_name)
-    all_image_paths = list(data_path.glob('*/*'))
-    all_image_paths_list = sorted([str(path) for path in all_image_paths])
-    image_count = len(all_image_paths_list)
-    print('load path successfully!!!\nimage_count:%s' % (image_count))
-    return all_image_paths_list
-
-# load path 王昱版s
 def read_path(root, trainimg, trainlab):
     trainimglist = sorted([os.path.join(root, trainimg, i) for i in os.listdir(os.path.join(root, trainimg))])
     trainlablist = sorted([os.path.join(root, trainlab, i) for i in os.listdir(os.path.join(root, trainlab))])
     return [trainimglist, trainlablist]
 
-# 将数据库中的路径读取，找到对应图片，并进行resize和normalization
+# load images from paths, and resize and normalize them
 def load_and_preprocess_from_paths(path_ds, label_ds, IMG_LENGTH=224*3, IMG_WIDTH=224*3, padding=True):
     IMG_LENGTH = IMG_LENGTH
     IMG_WIDTH = IMG_WIDTH
@@ -29,7 +18,7 @@ def load_and_preprocess_from_paths(path_ds, label_ds, IMG_LENGTH=224*3, IMG_WIDT
     img, img_lab = tf.image.resize_with_crop_or_pad(img, IMG_LENGTH, IMG_WIDTH), \
                  tf.image.resize_with_crop_or_pad(img_lab, IMG_LENGTH, IMG_WIDTH)
 
-    # --------------------------随机平移-----------------------------
+    # --------------------------random translation-----------------------------
     print(img.shape)
     h, w, c = img.shape
     flag = random.random()
@@ -51,7 +40,7 @@ def load_and_preprocess_from_paths(path_ds, label_ds, IMG_LENGTH=224*3, IMG_WIDT
             a = img_lab[sh:h, :, :]
             b = img_lab[0:sh, :, :]
             img_lab = tf.concat([a, b], axis=0)
-    # --------------------------随机平移-----------------------------
+    # --------------------------random translation-----------------------------
 
 
     # img, img_lab = tf.image.resize(img, [IMG_LENGTH, IMG_WIDTH]), \
@@ -61,7 +50,6 @@ def load_and_preprocess_from_paths(path_ds, label_ds, IMG_LENGTH=224*3, IMG_WIDT
     return img, img_lab
 
 
-# 进行训练集和测试集的划分
 def slice_ds(ds, train_rate=1):
     if train_rate == 1:
         index = int(len(ds) * train_rate)
