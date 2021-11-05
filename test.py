@@ -1,11 +1,12 @@
 import tensorflow as tf
 import create_dataset
-import model.Unet_tiny as Unet_tiny
-from Functions.datascripe.read_pred_vision import save_change_plt as rpv
+import model.Mo_U_net as Unet_tiny
+
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
-tf.config.experimental.set_visible_devices(devices=gpus[5:6], device_type="GPU")
+
 if gpus:
+    tf.config.experimental.set_visible_devices(devices=gpus[5:6], device_type="GPU")
     try:
         # set GPU usage with a demanding mode
         for gpu in gpus:
@@ -29,9 +30,9 @@ CHANNELS = 3
 BATCH_SIZE = 1
 # train_rate = 0.8
 
-PATH = r'C:\Users\Pangzhentao\learn_keras\test data\final_test\true_label_by_hand\diameter_2.58mm velocity_118.2'
+PATH = r'C:\Users\wxyice\Documents\GitHub\Recognition-of-multiscale-dense-gel-filament-droplet-field-in-digital-holography-with-Mo-U-net\test data\diameter_1.74mm velocity_92.9'
 test_dir_name = r'\cut_672'
-PATH += test_dir_name
+#PATH += test_dir_name
 # PATH = r'C:\Users\Pangzhentao\learn_keras\test data\final_test\true_label_by_hand\diameter_1.74mm velocity_92.9\cut_672'
 
 # load train set
@@ -50,7 +51,7 @@ print('-------------------------testing!!!-----------------------------')
 # load basic_model
 Unet_model = Unet_tiny.UnetTiny(classes=2, input_shape=[IMG_HEIGHT, IMG_WIDTH, CHANNELS], trainable=False) # 加载Unet
 basic_model = Unet_model
-checkpoint_dir = r'C:\Users\Pangzhentao\learn_keras\train_log\20210626-185451-unet_tiny-categorical_crossentropy-100e-0.001'
+checkpoint_dir = r'C:\Users\wxyice\Documents\GitHub\Recognition-of-multiscale-dense-gel-filament-droplet-field-in-digital-holography-with-Mo-U-net\train_log\20210707-153524-CEL'
 latest = tf.train.latest_checkpoint(checkpoint_dir)
 basic_model.load_weights(latest)
 
@@ -75,7 +76,7 @@ print('---------------------testing finished!!!------------------------')
 
 print('------------------------generating avi!!!-----------------------')
 name = 'test'
-rpv(name=name, path=PATH)
+# rpv(name=name, path=PATH)
 print('----------------------avi generated successfully!!!-------------')
 
 # print('------------------------counting metrics!!!----------------------')
